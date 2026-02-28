@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tesla Inventory Fixture</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+
+      main {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .inventory-grid {
+        display: grid;
+        gap: 20px;
+      }
+
+      .vehicle-card {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      }
+
+      .spacer {
+        height: 1200px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Used Model Y</h1>
+      <section class="inventory-grid" id="inventory">
+        <article class="vehicle-card">
+          <h2>2023 Model Y Long Range</h2>
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Model Y">
+          <p>$22,000</p>
+          <p>2020 Repaired Pre-Owned Vehicle with 99,709 mi</p>
+          <p>Located in Pleasant Grove</p>
+          <p>277 mi range (est.)</p>
+          <a href="/inventory/used/listing-1">View details</a>
+        </article>
+        <article class="vehicle-card">
+          <h2>2023 Model Y Performance</h2>
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Model Y">
+          <p>$20,700</p>
+          <p>2021 Repaired Pre-Owned Vehicle with 90,900 mi</p>
+          <p>Located in Fountain</p>
+          <p>199 mi range (est.)</p>
+          <a href="/inventory/used/listing-2">View details</a>
+        </article>
+      </section>
+      <div class="spacer"></div>
+    </main>
+    <script>
+      let appended = false;
+
+      function appendLateListing() {
+        if (appended) {
+          return;
+        }
+
+        appended = true;
+        const card = document.createElement("article");
+        card.className = "vehicle-card";
+        card.innerHTML = [
+          "<h2>2024 Model Y Long Range</h2>",
+          "<img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==' alt='Model Y'>",
+          "<p>$39,900</p>",
+          "<p>2023 Repaired Pre-Owned Vehicle with 12,100 mi</p>",
+          "<p>Located in Austin</p>",
+          "<p>300 mi range (est.)</p>",
+          "<a href='/inventory/used/listing-3'>View details</a>"
+        ].join("");
+
+        document.getElementById("inventory").appendChild(card);
+      }
+
+      async function loadInventory(offset) {
+        const model = location.pathname.split("/").filter(Boolean).pop() || "my";
+        const query = encodeURIComponent(JSON.stringify({
+          query: {
+            model,
+            condition: "used"
+          },
+          offset,
+          count: offset === 0 ? 2 : 1
+        }));
+
+        await fetch(`/inventory/api/v4/inventory-results?query=${query}`);
+      }
+
+      window.setTimeout(() => {
+        void loadInventory(0);
+      }, 0);
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 500) {
+          window.setTimeout(async () => {
+            appendLateListing();
+            await loadInventory(2);
+          }, 100);
+        }
+      }, { passive: true });
+    </script>
+  </body>
+</html>

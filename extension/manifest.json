@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Tesla HW4 Inventory Badge",
+  "version": "0.1.0",
+  "description": "Adds HW3/HW4 badges to Tesla pre-owned listings using VIN thresholds.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.tesla.com/inventory/*",
+        "http://127.0.0.1/*",
+        "http://localhost/*"
+      ],
+      "js": [
+        "content-script.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page-bridge.js"
+      ],
+      "matches": [
+        "https://www.tesla.com/*",
+        "http://127.0.0.1/*",
+        "http://localhost/*"
+      ]
+    }
+  ]
+}
